@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
@@ -44,9 +44,22 @@ const templates = [
   },
 ]
 
+// Separate component to handle search params
+function TemplateSelector({ onSelectTemplate }: { onSelectTemplate: (templateId: string | null) => void }) {
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const templateFromUrl = searchParams?.get("template")
+    if (templateFromUrl) {
+      onSelectTemplate(templateFromUrl)
+    }
+  }, [searchParams, onSelectTemplate])
+
+  return null
+}
+
 export function PortfolioCreationWizard() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { toast } = useToast()
   const [step, setStep] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
@@ -63,32 +76,15 @@ export function PortfolioCreationWizard() {
   })
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
 
-  // Check if a template was selected from the URL
-  useEffect(() => {
-    const templateFromUrl = searchParams?.get("template")
-    if (templateFromUrl) {
-      setSelectedTemplate(templateFromUrl)
-      setFormData((prev) => ({ ...prev, template: templateFromUrl }))
-      // Only set step to 2 if we're currently at step 1
+  const handleTemplateFromUrl = (templateId: string | null) => {
+    if (templateId && !selectedTemplate) {
+      setSelectedTemplate(templateId)
+      setFormData((prev) => ({ ...prev, template: templateId }))
       if (step === 1) {
         setStep(2)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // Empty dependency array to run only once on mount
-
-  // Handle searchParams changes separately
-  useEffect(() => {
-    // Only update if searchParams changes and we haven't already set a template
-    if (searchParams && !selectedTemplate) {
-      const templateFromUrl = searchParams.get("template")
-      if (templateFromUrl) {
-        setSelectedTemplate(templateFromUrl)
-        setFormData((prev) => ({ ...prev, template: templateFromUrl }))
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, selectedTemplate])
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -179,6 +175,11 @@ export function PortfolioCreationWizard() {
 
   return (
     <div className="space-y-8">
+      {/* Wrap the search params component in Suspense */}
+      <Suspense fallback={null}>
+        <TemplateSelector onSelectTemplate={handleTemplateFromUrl} />
+      </Suspense>
+
       <div className="flex justify-between items-center">
         <div className="flex space-x-2">
           {steps.map((s) => (

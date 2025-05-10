@@ -1,6 +1,7 @@
 import {
   AlertTriangle,
   ArrowRight,
+  Briefcase,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -12,6 +13,7 @@ import {
   HelpCircle,
   ImageIcon,
   Laptop,
+  Layout,
   Loader2,
   Moon,
   MoreVertical,
@@ -26,7 +28,6 @@ import {
   type LucideIcon,
   Sparkles,
   Palette,
-  Layout,
   Globe,
   Code,
   Rocket,
@@ -76,4 +77,5 @@ export const Icons = {
   image: ImageIcon,
   eye: Eye,
   plus: Plus,
+  briefcase: Briefcase,
 }
