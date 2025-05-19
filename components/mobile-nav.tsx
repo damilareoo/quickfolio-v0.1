@@ -1,92 +1,102 @@
 "use client"
 
-import * as React from "react"
+import { useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { motion, AnimatePresence } from "framer-motion"
+import { X } from "lucide-react"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Icons } from "@/components/icons"
+import { Logo } from "@/components/ui/logo"
 
-export function MobileNav() {
+const navItems = [
+  { href: "/templates", label: "Templates" },
+  { href: "/features", label: "Features" },
+  { href: "/pricing", label: "Pricing" },
+  { href: "/showcase", label: "Showcase" },
+]
+
+interface MobileNavProps {
+  open: boolean
+  onClose: () => void
+}
+
+export function MobileNav({ open, onClose }: MobileNavProps) {
   const pathname = usePathname()
-  const [open, setOpen] = React.useState(false)
+
+  // Close the mobile nav when clicking outside
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose()
+    }
+
+    document.addEventListener("keydown", handleEscape)
+    return () => document.removeEventListener("keydown", handleEscape)
+  }, [onClose])
+
+  // Close the mobile nav when route changes
+  useEffect(() => {
+    onClose()
+  }, [pathname, onClose])
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button
-          variant="ghost"
-          className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 z-50 bg-background/80 backdrop-blur-md md:hidden"
         >
-          <Icons.menu className="h-6 w-6" />
-          <span className="sr-only">Toggle Menu</span>
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="left" className="pr-0">
-        <MobileLink href="/" className="flex items-center" onOpenChange={setOpen}>
-          <Icons.logo className="mr-2 h-4 w-4" />
-          <span className="font-bold">Quickfolio</span>
-        </MobileLink>
-        <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
-          <div className="flex flex-col space-y-3">
-            <MobileLink
-              href="/templates"
-              onOpenChange={setOpen}
-              className={cn(pathname === "/templates" && "text-foreground")}
-            >
-              Templates
-            </MobileLink>
-            <MobileLink
-              href="/pricing"
-              onOpenChange={setOpen}
-              className={cn(pathname === "/pricing" && "text-foreground")}
-            >
-              Pricing
-            </MobileLink>
-            <MobileLink
-              href="/showcase"
-              onOpenChange={setOpen}
-              className={cn(pathname === "/showcase" && "text-foreground")}
-            >
-              Showcase
-            </MobileLink>
-            <MobileLink href="/auth/login" onOpenChange={setOpen} className="mt-4">
-              Login
-            </MobileLink>
-            <MobileLink href="/auth/register" onOpenChange={setOpen} className="font-bold">
-              Sign Up
-            </MobileLink>
-          </div>
-        </ScrollArea>
-      </SheetContent>
-    </Sheet>
-  )
-}
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="fixed right-0 top-0 h-full w-full max-w-xs bg-surface-bright border-l border-white/5 p-6 shadow-xl"
+          >
+            <div className="flex items-center justify-between mb-8">
+              <Link href="/" className="flex items-center gap-2" onClick={onClose}>
+                <Logo className="h-8 w-8" />
+                <span className="font-display text-xl font-medium">Quickfolio</span>
+              </Link>
+              <Button variant="ghost" size="icon" onClick={onClose}>
+                <X className="h-5 w-5" />
+                <span className="sr-only">Close menu</span>
+              </Button>
+            </div>
 
-interface MobileLinkProps extends React.ComponentPropsWithoutRef<typeof Link> {
-  onOpenChange?: (open: boolean) => void
-  children: React.ReactNode
-  className?: string
-}
+            <nav className="flex flex-col space-y-6">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "text-lg font-medium transition-colors",
+                    pathname === item.href ? "text-foreground" : "text-muted-foreground",
+                  )}
+                  onClick={onClose}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
 
-function MobileLink({ href, onOpenChange, className, children, ...props }: MobileLinkProps) {
-  const pathname = usePathname()
-  const isActive = pathname === href
-
-  return (
-    <Link
-      href={href}
-      onClick={() => onOpenChange?.(false)}
-      className={cn(
-        "text-foreground/70 transition-colors hover:text-foreground",
-        isActive && "text-foreground",
-        className,
+            <div className="mt-8 space-y-4">
+              <Link href="/auth/login" className="block w-full">
+                <Button variant="outline" className="w-full">
+                  Sign in
+                </Button>
+              </Link>
+              <Link href="/auth/register" className="block w-full">
+                <Button className="w-full">Get Started</Button>
+              </Link>
+            </div>
+          </motion.div>
+        </motion.div>
       )}
-      {...props}
-    >
-      {children}
-    </Link>
+    </AnimatePresence>
   )
 }

@@ -1,3 +1,4 @@
+import type React from "react"
 import {
   AlertTriangle,
   ArrowRight,
@@ -5,7 +6,6 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  Command,
   CreditCard,
   Eye,
   File,
@@ -36,12 +36,37 @@ import {
   Linkedin,
   Mail,
   Menu,
+  ExternalLink,
+  Layers,
+  Monitor,
+  Smartphone,
+  Tablet,
+  Download,
+  Copy,
 } from "lucide-react"
 
 export type Icon = LucideIcon
 
+// Custom logo component
+const QuickfolioLogo = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+    <path d="M2 17l10 5 10-5" />
+    <path d="M2 12l10 5 10-5" />
+  </svg>
+)
+
 export const Icons = {
-  logo: Command,
+  logo: QuickfolioLogo,
   close: X,
   spinner: Loader2,
   chevronLeft: ChevronLeft,
@@ -78,4 +103,11 @@ export const Icons = {
   eye: Eye,
   plus: Plus,
   briefcase: Briefcase,
+  externalLink: ExternalLink,
+  layers: Layers,
+  monitor: Monitor,
+  smartphone: Smartphone,
+  tablet: Tablet,
+  download: Download,
+  copy: Copy,
 }

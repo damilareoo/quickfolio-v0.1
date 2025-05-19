@@ -1,14 +1,12 @@
 "use client"
 
-import { useState } from "react"
-import { motion } from "framer-motion"
+import { useState, useRef } from "react"
+import { motion, useInView } from "framer-motion"
 import { Check } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
+import { Badge } from "@/components/ui/badge"
 
 const plans = [
   {
@@ -55,6 +53,8 @@ const plans = [
 
 export function Pricing() {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly")
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true, margin: "-100px" })
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -78,74 +78,99 @@ export function Pricing() {
   }
 
   return (
-    <section id="pricing" className="container py-12 md:py-24 lg:py-32">
-      <div className="mx-auto flex max-w-[58rem] flex-col items-center justify-center gap-4 text-center">
-        <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-5xl">Simple, Transparent Pricing</h2>
-        <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
-          Choose the plan that's right for you and start building your portfolio today.
-        </p>
+    <section id="pricing" className="py-24 relative" ref={ref}>
+      <div className="container relative z-10">
+        <div className="mx-auto flex max-w-[58rem] flex-col items-center justify-center gap-4 text-center mb-12">
+          <Badge variant="outline" className="mb-2">
+            Pricing
+          </Badge>
+          <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+            Simple, Transparent Pricing
+          </h2>
+          <p className="max-w-[85%] leading-normal text-muted-foreground md:text-lg">
+            Choose the plan that's right for you and start building your portfolio today.
+          </p>
 
-        <div className="flex items-center space-x-2 mt-6">
-          <Label htmlFor="billing-cycle">Monthly</Label>
-          <Switch
-            id="billing-cycle"
-            checked={billingCycle === "annual"}
-            onCheckedChange={(checked) => setBillingCycle(checked ? "annual" : "monthly")}
-          />
-          <Label htmlFor="billing-cycle" className="flex items-center">
-            Annual
-            <span className="ml-2 rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-800 dark:bg-green-900 dark:text-green-100">
-              Save 20%
-            </span>
-          </Label>
-        </div>
-      </div>
-
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        className="mx-auto mt-12 grid max-w-screen-lg gap-4 sm:grid-cols-2 lg:grid-cols-3"
-      >
-        {plans.map((plan, index) => (
-          <motion.div key={index} variants={itemVariants}>
-            <Card className={cn("flex h-full flex-col", plan.popular && "border-primary shadow-md")}>
-              {plan.popular && (
-                <div className="absolute -top-3 left-0 right-0 mx-auto w-fit rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
-                  Most Popular
-                </div>
+          <div className="flex items-center space-x-2 mt-6 bg-surface-muted rounded-full p-1 border border-white/5">
+            <button
+              onClick={() => setBillingCycle("monthly")}
+              className={cn(
+                "px-4 py-2 text-sm font-medium rounded-full transition-all",
+                billingCycle === "monthly" ? "bg-white text-black" : "text-muted-foreground hover:text-white",
               )}
-              <CardHeader className={cn(plan.popular && "pt-8")}>
-                <CardTitle>{plan.name}</CardTitle>
-                <CardDescription>{plan.description}</CardDescription>
-                <div className="mt-4">
-                  <span className="text-4xl font-bold">${plan.price[billingCycle]}</span>
-                  <span className="text-muted-foreground">{plan.price[billingCycle] > 0 ? "/month" : ""}</span>
+            >
+              Monthly
+            </button>
+            <button
+              onClick={() => setBillingCycle("annual")}
+              className={cn(
+                "px-4 py-2 text-sm font-medium rounded-full transition-all flex items-center gap-2",
+                billingCycle === "annual" ? "bg-white text-black" : "text-muted-foreground hover:text-white",
+              )}
+            >
+              <span>Annual</span>
+              <span className="bg-green-900 text-green-100 text-xs px-1.5 py-0.5 rounded-full">Save 20%</span>
+            </button>
+          </div>
+        </div>
+
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="grid gap-8 md:grid-cols-3"
+        >
+          {plans.map((plan, index) => (
+            <motion.div key={index} variants={itemVariants} className={cn("card-hover", plan.popular && "lg:-mt-8")}>
+              <div
+                className={cn(
+                  "relative rounded-xl border border-white/5 bg-surface p-6 h-full flex flex-col",
+                  plan.popular && "border-white/20 bg-surface-bright",
+                )}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-3 left-0 right-0 mx-auto w-fit">
+                    <Badge className="bg-white text-black">Most Popular</Badge>
+                  </div>
+                )}
+
+                <div className={cn("mb-6", plan.popular && "pt-4")}>
+                  <h3 className="text-xl font-medium">{plan.name}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">{plan.description}</p>
+
+                  <div className="mt-4 flex items-baseline">
+                    <span className="text-4xl font-bold">${plan.price[billingCycle]}</span>
+                    <span className="text-muted-foreground ml-1">{plan.price[billingCycle] > 0 ? "/month" : ""}</span>
+                  </div>
+
                   {billingCycle === "annual" && plan.price.annual > 0 && (
-                    <p className="text-sm text-muted-foreground">Billed annually (${plan.price.annual * 12}/year)</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Billed annually (${plan.price.annual * 12}/year)
+                    </p>
                   )}
                 </div>
-              </CardHeader>
-              <CardContent className="flex-1">
-                <ul className="space-y-2">
-                  {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-center">
-                      <Check className="mr-2 h-4 w-4 text-primary" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-              <CardFooter>
-                <Button className="w-full" variant={plan.popular ? "default" : "outline"}>
+
+                <div className="mb-8 flex-1">
+                  <ul className="space-y-3">
+                    {plan.features.map((feature, i) => (
+                      <li key={i} className="flex items-start">
+                        <Check className="mr-2 h-5 w-5 text-white shrink-0 mt-0.5" />
+                        <span className="text-sm text-muted-foreground">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <Button
+                  className={cn("w-full", plan.popular ? "bg-white text-black hover:bg-white/90" : "variant-outline")}
+                >
                   {plan.cta}
                 </Button>
-              </CardFooter>
-            </Card>
-          </motion.div>
-        ))}
-      </motion.div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
     </section>
   )
 }

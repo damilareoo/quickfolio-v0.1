@@ -22,6 +22,7 @@ import { DashboardHeader } from "@/components/dashboard-header"
 import { DashboardShell } from "@/components/dashboard-shell"
 import { EmptyPlaceholder } from "@/components/empty-placeholder"
 import { useToast } from "@/components/ui/use-toast"
+import { Badge } from "@/components/ui/badge"
 
 // Sample portfolio data
 const portfolios = [
@@ -29,16 +30,16 @@ const portfolios = [
     id: "1",
     name: "Personal Portfolio",
     description: "My professional web development portfolio",
-    image: "/templates/layers-template.jpg",
+    image: "/templates/damilare-template.png",
     lastUpdated: "2 days ago",
     status: "published",
-    template: "Layers",
+    template: "Damilare",
   },
   {
     id: "2",
     name: "Photography Showcase",
     description: "Collection of my best photography work",
-    image: "/templates/masid-template.jpg",
+    image: "/templates/masid-template.png",
     lastUpdated: "1 week ago",
     status: "draft",
     template: "Masid",
@@ -86,9 +87,9 @@ export default function DashboardPage() {
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="Portfolios" text="Create and manage your professional portfolios.">
+      <DashboardHeader heading="Your Portfolios" text="Create and manage your professional portfolios.">
         <Link href="/dashboard/new">
-          <div className={cn(buttonVariants())}>
+          <div className={cn(buttonVariants(), "rounded-full")}>
             <PlusCircle className="mr-2 h-4 w-4" />
             New Portfolio
           </div>
@@ -172,13 +173,9 @@ export default function DashboardPage() {
                       </DropdownMenu>
                     </div>
                     {portfolio.status === "published" ? (
-                      <div className="absolute top-2 left-2 rounded-full bg-green-500 px-2 py-1 text-xs font-medium text-white">
-                        Published
-                      </div>
+                      <Badge className="absolute top-2 left-2 bg-green-500 hover:bg-green-600">Published</Badge>
                     ) : (
-                      <div className="absolute top-2 left-2 rounded-full bg-amber-500 px-2 py-1 text-xs font-medium text-white">
-                        Draft
-                      </div>
+                      <Badge className="absolute top-2 left-2 bg-amber-500 hover:bg-amber-600">Draft</Badge>
                     )}
                   </div>
                   <CardHeader className="p-4">
@@ -201,7 +198,7 @@ export default function DashboardPage() {
               You don&apos;t have any portfolios yet. Start creating one.
             </EmptyPlaceholder.Description>
             <Link href="/dashboard/new">
-              <div className={cn(buttonVariants({ variant: "outline" }))}>
+              <div className={cn(buttonVariants({ variant: "outline" }), "rounded-full")}>
                 <PlusCircle className="mr-2 h-4 w-4" />
                 New Portfolio
               </div>

@@ -1,6 +1,5 @@
 "use client"
 import { Icons } from "@/components/icons"
-import { Button } from "@/components/ui/button"
 
 interface PortfolioPreviewProps {
   template: string
@@ -18,9 +17,11 @@ interface PortfolioPreviewProps {
 
 export function PortfolioPreview({ template, data }: PortfolioPreviewProps) {
   // Render different preview based on template
-  if (template === "layers") {
+  if (template === "minimalist") {
+    return <DamilarePreview data={data} />
+  } else if (template === "professional") {
     return <LayersPreview data={data} />
-  } else if (template === "masid") {
+  } else if (template === "creative") {
     return <MasidPreview data={data} />
   } else if (template === "bento") {
     return <BentoPreview data={data} />
@@ -38,6 +39,206 @@ export function PortfolioPreview({ template, data }: PortfolioPreviewProps) {
   )
 }
 
+function DamilarePreview({ data }: { data: PortfolioPreviewProps["data"] }) {
+  return (
+    <div className="overflow-hidden border rounded-lg h-[600px] bg-white dark:bg-gray-900">
+      <div className="h-full overflow-auto">
+        {/* Header - D  bg-white dark:bg-gray-900">
+      <div className="h-full overflow-auto">
+        {/* Header - Damilare style with fixed header */}
+        <header className="sticky top-0 py-4 px-6 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md z-10 border-b border-gray-200 dark:border-gray-800">
+          <div className="flex justify-between items-center">
+            <h1 className="text-xl font-bold">{data.name || "Your Name"}</h1>
+            <nav className="hidden md:flex space-x-6">
+              <a href="#about" className="text-sm font-medium hover:text-gray-900 dark:hover:text-white">
+                About
+              </a>
+              <a href="#projects" className="text-sm font-medium hover:text-gray-900 dark:hover:text-white">
+                Projects
+              </a>
+              <a href="#experience" className="text-sm font-medium hover:text-gray-900 dark:hover:text-white">
+                Experience
+              </a>
+              <a href="#contact" className="text-sm font-medium hover:text-gray-900 dark:hover:text-white">
+                Contact
+              </a>
+            </nav>
+            <button className="md:hidden">
+              <Icons.menu className="h-5 w-5" />
+            </button>
+          </div>
+        </header>
+
+        {/* Hero section */}
+        <section className="py-12 px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h2 className="text-3xl font-bold mb-3">{data.profession || "Your Profession"}</h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                {data.description || "A brief description of your portfolio"}
+              </p>
+              <div className="flex space-x-3">
+                <button className="inline-flex items-center justify-center rounded-md bg-gray-900 dark:bg-white px-4 py-2 text-sm font-medium text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors">
+                  Contact Me
+                </button>
+                <button className="inline-flex items-center justify-center rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                  <Icons.download className="mr-2 h-4 w-4" />
+                  Resume
+                </button>
+              </div>
+            </div>
+            <div className="bg-gray-100 dark:bg-gray-800 rounded-lg aspect-square flex items-center justify-center">
+              <div className="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+            </div>
+          </div>
+        </section>
+
+        {/* About section */}
+        <section id="about" className="py-8 px-6 border-t border-gray-200 dark:border-gray-800">
+          <h3 className="text-xl font-bold mb-4">About Me</h3>
+          <div className="prose max-w-none dark:prose-invert">
+            <p className="text-sm leading-relaxed">{data.about || "No information provided yet."}</p>
+          </div>
+        </section>
+
+        {/* Skills section */}
+        <section className="py-8 px-6 border-t border-gray-200 dark:border-gray-800">
+          <h3 className="text-xl font-bold mb-4">Skills</h3>
+          <div className="flex flex-wrap gap-2">
+            {data.skills ? (
+              data.skills.split(",").map((skill, index) => (
+                <span key={index} className="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-md text-xs">
+                  {skill.trim()}
+                </span>
+              ))
+            ) : (
+              <p>No skills listed yet.</p>
+            )}
+          </div>
+        </section>
+
+        {/* Projects section */}
+        <section id="projects" className="py-8 px-6 border-t border-gray-200 dark:border-gray-800">
+          <h3 className="text-xl font-bold mb-4">Projects</h3>
+          {data.projects ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {data.projects.split("\n").map((project, index) => (
+                <div key={index} className="border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
+                  <div className="aspect-video bg-gray-100 dark:bg-gray-800"></div>
+                  <div className="p-4">
+                    <h4 className="text-base font-semibold mb-2">{project.split(" - ")[0]}</h4>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">{project.split(" - ")[1] || ""}</p>
+                    <div className="flex space-x-2">
+                      <button className="inline-flex items-center justify-center rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        <Icons.externalLink className="mr-1 h-3 w-3" />
+                        Live Demo
+                      </button>
+                      <button className="inline-flex items-center justify-center rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        <Icons.gitHub className="mr-1 h-3 w-3" />
+                        Source Code
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No projects listed yet.</p>
+          )}
+        </section>
+
+        {/* Experience section */}
+        <section id="experience" className="py-8 px-6 border-t border-gray-200 dark:border-gray-800">
+          <h3 className="text-xl font-bold mb-4">Experience</h3>
+          {data.experience ? (
+            <div className="space-y-4">
+              {data.experience.split("\n").map((exp, index) => (
+                <div key={index} className="border-l-2 border-gray-300 dark:border-gray-700 pl-4 py-1">
+                  <h4 className="text-base font-semibold">{exp.split(" at ")[0] || exp}</h4>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{exp.split(" at ")[1] || ""}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No experience listed yet.</p>
+          )}
+        </section>
+
+        {/* Contact section */}
+        <section id="contact" className="py-8 px-6 border-t border-gray-200 dark:border-gray-800">
+          <h3 className="text-xl font-bold mb-4">Get In Touch</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Feel free to reach out if you're looking for a developer, have a question, or just want to connect.
+              </p>
+              <div className="flex space-x-2">
+                <button className="p-2 rounded-full border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                  <Icons.mail className="h-4 w-4" />
+                </button>
+                <button className="p-2 rounded-full border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                  <Icons.linkedin className="h-4 w-4" />
+                </button>
+                <button className="p-2 rounded-full border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                  <Icons.twitter className="h-4 w-4" />
+                </button>
+                <button className="p-2 rounded-full border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                  <Icons.gitHub className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+            <form className="space-y-3">
+              <div>
+                <label className="block text-xs font-medium mb-1">Name</label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-1.5 text-sm rounded-md border border-gray-300 dark:border-gray-700 bg-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1">Email</label>
+                <input
+                  type="email"
+                  className="w-full px-3 py-1.5 text-sm rounded-md border border-gray-300 dark:border-gray-700 bg-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1">Message</label>
+                <textarea
+                  rows={3}
+                  className="w-full px-3 py-1.5 text-sm rounded-md border border-gray-300 dark:border-gray-700 bg-transparent resize-none"
+                ></textarea>
+              </div>
+              <button className="w-full inline-flex items-center justify-center rounded-md bg-gray-900 dark:bg-white px-4 py-2 text-sm font-medium text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors">
+                Send Message
+              </button>
+            </form>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="py-6 px-6 border-t border-gray-200 dark:border-gray-800">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              © {new Date().getFullYear()} {data.name || "Your Name"}. All rights reserved.
+            </p>
+            <div className="flex space-x-3 mt-3 md:mt-0">
+              <button className="text-xs text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <Icons.mail className="mr-1 h-3 w-3 inline-block" />
+                Contact
+              </button>
+              <button className="text-xs text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <Icons.download className="mr-1 h-3 w-3 inline-block" />
+                Resume
+              </button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  )
+}
+
 function LayersPreview({ data }: { data: PortfolioPreviewProps["data"] }) {
   return (
     <div className="overflow-hidden border rounded-lg h-[600px] bg-white">
@@ -48,8 +249,12 @@ function LayersPreview({ data }: { data: PortfolioPreviewProps["data"] }) {
           <p className="text-xl text-muted-foreground mb-6">{data.profession || "Your Profession"}</p>
           <p className="text-lg max-w-2xl mx-auto">{data.description || "A brief description of your portfolio"}</p>
           <div className="flex justify-center gap-4 mt-8">
-            <Button>Contact Me</Button>
-            <Button variant="outline">View Projects</Button>
+            <button className="inline-flex items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 transition-colors">
+              Contact Me
+            </button>
+            <button className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+              View Projects
+            </button>
           </div>
         </header>
 
@@ -111,18 +316,18 @@ function LayersPreview({ data }: { data: PortfolioPreviewProps["data"] }) {
           <section className="text-center">
             <h2 className="text-2xl font-semibold mb-6">Get In Touch</h2>
             <div className="flex justify-center gap-4">
-              <Button size="icon" variant="ghost">
+              <button className="p-2 rounded-full hover:bg-gray-100 transition-colors">
                 <Icons.mail className="h-5 w-5" />
-              </Button>
-              <Button size="icon" variant="ghost">
+              </button>
+              <button className="p-2 rounded-full hover:bg-gray-100 transition-colors">
                 <Icons.linkedin className="h-5 w-5" />
-              </Button>
-              <Button size="icon" variant="ghost">
+              </button>
+              <button className="p-2 rounded-full hover:bg-gray-100 transition-colors">
                 <Icons.twitter className="h-5 w-5" />
-              </Button>
-              <Button size="icon" variant="ghost">
+              </button>
+              <button className="p-2 rounded-full hover:bg-gray-100 transition-colors">
                 <Icons.gitHub className="h-5 w-5" />
-              </Button>
+              </button>
             </div>
           </section>
         </main>
@@ -143,10 +348,12 @@ function MasidPreview({ data }: { data: PortfolioPreviewProps["data"] }) {
             <p className="text-2xl mb-8 text-purple-300">{data.profession || "Your Profession"}</p>
             <p className="text-lg max-w-xl">{data.description || "A brief description of your portfolio"}</p>
             <div className="flex gap-4 mt-10">
-              <Button className="bg-purple-600 hover:bg-purple-700">View Work</Button>
-              <Button variant="outline" className="border-purple-600 text-purple-300 hover:bg-purple-900/20">
+              <button className="inline-flex items-center justify-center rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700 transition-colors">
+                View Work
+              </button>
+              <button className="inline-flex items-center justify-center rounded-md border border-purple-600 bg-transparent px-4 py-2 text-sm font-medium text-purple-300 hover:bg-purple-900/20 transition-colors">
                 Contact
-              </Button>
+              </button>
             </div>
           </div>
         </header>
@@ -209,14 +416,14 @@ function MasidPreview({ data }: { data: PortfolioPreviewProps["data"] }) {
           <section className="text-center max-w-4xl mx-auto">
             <h2 className="text-4xl font-bold mb-12 text-purple-300">Contact</h2>
             <div className="flex justify-center gap-6">
-              <Button size="lg" className="bg-purple-600 hover:bg-purple-700">
+              <button className="inline-flex items-center justify-center rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700 transition-colors">
                 <Icons.mail className="mr-2 h-5 w-5" />
                 Email Me
-              </Button>
-              <Button size="lg" variant="outline" className="border-purple-600 text-purple-300 hover:bg-purple-900/20">
+              </button>
+              <button className="inline-flex items-center justify-center rounded-md border border-purple-600 bg-transparent px-4 py-2 text-sm font-medium text-purple-300 hover:bg-purple-900/20 transition-colors">
                 <Icons.linkedin className="mr-2 h-5 w-5" />
                 LinkedIn
-              </Button>
+              </button>
             </div>
           </section>
         </main>
@@ -240,15 +447,15 @@ function BentoPreview({ data }: { data: PortfolioPreviewProps["data"] }) {
             <div className="bg-white dark:bg-zinc-800 p-6 rounded-xl shadow-sm flex flex-col justify-center items-center">
               <div className="w-24 h-24 rounded-full bg-zinc-200 dark:bg-zinc-700 mb-4"></div>
               <div className="flex gap-2">
-                <Button size="icon" variant="ghost" className="rounded-full">
+                <button className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
                   <Icons.twitter className="h-4 w-4" />
-                </Button>
-                <Button size="icon" variant="ghost" className="rounded-full">
+                </button>
+                <button className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
                   <Icons.gitHub className="h-4 w-4" />
-                </Button>
-                <Button size="icon" variant="ghost" className="rounded-full">
+                </button>
+                <button className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
                   <Icons.linkedin className="h-4 w-4" />
-                </Button>
+                </button>
               </div>
             </div>
           </div>

@@ -1,7 +1,7 @@
 "use client"
 
-import { motion } from "framer-motion"
-
+import { useRef } from "react"
+import { motion, useInView } from "framer-motion"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 const faqs = [
@@ -38,31 +38,42 @@ const faqs = [
 ]
 
 export function FAQ() {
-  return (
-    <section id="faq" className="container py-12 md:py-24 lg:py-32">
-      <div className="mx-auto flex max-w-[58rem] flex-col items-center justify-center gap-4 text-center">
-        <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-5xl">Frequently Asked Questions</h2>
-        <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
-          Find answers to common questions about Quickfolio.
-        </p>
-      </div>
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true, margin: "-100px" })
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        viewport={{ once: true }}
-        className="mx-auto mt-12 max-w-3xl"
-      >
-        <Accordion type="single" collapsible className="w-full">
-          {faqs.map((faq, index) => (
-            <AccordionItem key={index} value={`item-${index}`}>
-              <AccordionTrigger>{faq.question}</AccordionTrigger>
-              <AccordionContent>{faq.answer}</AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </motion.div>
+  return (
+    <section id="faq" className="py-24 relative" ref={ref}>
+      <div className="container relative z-10">
+        <div className="mx-auto flex max-w-[58rem] flex-col items-center justify-center gap-4 text-center mb-16">
+          <span className="inline-block rounded-full border border-white/10 bg-black px-3 py-1 text-xs text-white mb-2">
+            FAQ
+          </span>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">Frequently Asked Questions</h2>
+          <p className="max-w-[85%] leading-normal text-white/70 md:text-lg">
+            Find answers to common questions about Quickfolio.
+          </p>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
+          className="mx-auto max-w-3xl"
+        >
+          <Accordion type="single" collapsible className="w-full space-y-4">
+            {faqs.map((faq, index) => (
+              <AccordionItem
+                key={index}
+                value={`item-${index}`}
+                className="rounded-lg border border-white/5 bg-black px-6 py-2"
+              >
+                <AccordionTrigger className="text-base font-medium">{faq.question}</AccordionTrigger>
+                <AccordionContent className="text-white/70">{faq.answer}</AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </motion.div>
+      </div>
     </section>
   )
 }
